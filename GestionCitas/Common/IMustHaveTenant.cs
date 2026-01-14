@@ -1,6 +1,6 @@
 ﻿namespace GestionCitas.Common
 {
-    public interface IMustHaveNegocio
+    public interface IMustHaveTenant
     {
         public int NegocioId { get; set; }
     }

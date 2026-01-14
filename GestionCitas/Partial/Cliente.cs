@@ -1,9 +1,14 @@
 ﻿using GestionCitas.Common;
+using GestionCitas.Models;
 
-namespace GestionCitas.Partial
+namespace GestionCitas.Models
 {
-    public partial class Cliente : IMustHaveNegocio
+    public partial class Cliente : IMustHaveTenant
     {
-        public int NegocioId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int NegocioId 
+        {
+            get => negocioid; // Mapea a la propiedad generada por scaffold
+            set => negocioid = value;
+        }
     }
 }

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using GestionCitas.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionCitas.Models;
 
 public partial class GestionCitasContext : DbContext
 {
-    public GestionCitasContext()
-    {
-    }
+    private readonly ICurrentTenantService _currentTenantService;
 
-    public GestionCitasContext(DbContextOptions<GestionCitasContext> options)
+    public GestionCitasContext(DbContextOptions<GestionCitasContext>options, ICurrentTenantService currentTenantService)
         : base(options)
     {
+        _currentTenantService = currentTenantService;
     }
+     
 
     public virtual DbSet<Cita> citas { get; set; }
 
@@ -30,6 +31,21 @@ public partial class GestionCitasContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(IMustHaveTenant).IsAssignableFrom(entityType.ClrType))
+            {
+                // Aplicamos el filtro: "Solo trae registros donde NegocioId coincida con el usuario actual"
+                var method = typeof(GestionCitasContext)
+                    .GetMethod(nameof(SetGlobalQueryFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    ?.MakeGenericMethod(entityType.ClrType);
+
+                method?.Invoke(this, new object[] { modelBuilder });
+            }
+        }
+
         modelBuilder.Entity<Cita>(entity =>
         {
             entity.HasKey(e => e.citaid).HasName("pk_citaid");
@@ -138,6 +154,33 @@ public partial class GestionCitasContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+    // Método auxiliar para construir la expresión lambda dinámicamente
+    
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    private void SetGlobalQueryFilter<T>(ModelBuilder modelBuilder) where T : class, IMustHaveTenant
+    {
+        modelBuilder.Entity<T>().HasQueryFilter(e => e.NegocioId == _currentTenantService.NegocioId);
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        // Buscamos todas las entidades que se van a insertar o modificar
+        foreach (var entry in ChangeTracker.Entries<IMustHaveTenant>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                case EntityState.Modified:
+                    // Si el servicio nos da un ID válido, lo forzamos en la entidad
+                    if (_currentTenantService.NegocioId.HasValue)
+                    {
+                        entry.Entity.NegocioId = _currentTenantService.NegocioId.Value;
+                    }
+                    break;
+            }
+        }
+        return base.SaveChangesAsync(cancellationToken);
+    }
 }

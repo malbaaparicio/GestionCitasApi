@@ -15,7 +15,7 @@ public partial class Cliente
 
     public string? apellidos { get; set; }
 
-    public int? negocioid { get; set; }
+    public int negocioid { get; set; }
 
     public string? notas_internas { get; set; }
 

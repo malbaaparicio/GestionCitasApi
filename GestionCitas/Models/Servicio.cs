@@ -9,7 +9,7 @@ public partial class Servicio
 
     public string? nombre { get; set; }
 
-    public int? negocioid { get; set; }
+    public int negocioid { get; set; }
 
     public int? duracion { get; set; }
 

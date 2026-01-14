@@ -22,7 +22,7 @@ public partial class Cita
 
     public DateTime? fecha_hora_fin { get; set; }
 
-    public int? negocioid { get; set; }
+    public int negocioid { get; set; }
 
     public int? empleadoid { get; set; }
 

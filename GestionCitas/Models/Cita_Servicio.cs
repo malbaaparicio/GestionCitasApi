@@ -15,7 +15,7 @@ public partial class Cita_Servicio
 
     public int? duracion { get; set; }
 
-    public int? negocioid { get; set; }
+    public int negocioid { get; set; }
 
     public virtual Cita? cita { get; set; }
 

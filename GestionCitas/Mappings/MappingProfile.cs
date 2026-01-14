@@ -16,10 +16,7 @@ namespace GestionCitas.Mappings
             CreateMap<DTOs.ServicioCreateOrUpdateDto, Models.Servicio>();
             //Cita
             CreateMap<Models.Cita, DTOs.CitaGetDto>();
-            CreateMap<DTOs.CitaCreateOrUpdateDto, Models.Cita>();
-            //precio_servicio
-            CreateMap<Models.precio_servicio, DTOs.PrecioServicioGetDto>();
-            CreateMap<DTOs.PrecioServicioCreateOrUpdateDto, Models.precio_servicio>();
+            CreateMap<DTOs.CitaCreateOrUpdateDto, Models.Cita>();           
             //Cita_Servicio
             CreateMap<Models.Cita_Servicio, DTOs.CitaServicioGetDto>();
             CreateMap<DTOs.CitaServicioCreateOrUpdateDto, Models.Cita_Servicio>();
