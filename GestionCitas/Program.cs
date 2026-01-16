@@ -1,5 +1,7 @@
+using GestionCitas.Common;
 using GestionCitas.Mappings;
 using GestionCitas.Models;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +12,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<GestionCitasContext>(options =>
@@ -22,7 +25,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi();  
+    
 }
 
 app.UseHttpsRedirection();

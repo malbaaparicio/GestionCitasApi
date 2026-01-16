@@ -2,6 +2,6 @@
 {
     public interface IMustHaveTenant
     {
-        public int NegocioId { get; set; }
+        public int negocioid { get; set; }
     }
 }

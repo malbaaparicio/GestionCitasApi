@@ -20,6 +20,9 @@ namespace GestionCitas.Mappings
             //Cita_Servicio
             CreateMap<Models.Cita_Servicio, DTOs.CitaServicioGetDto>();
             CreateMap<DTOs.CitaServicioCreateOrUpdateDto, Models.Cita_Servicio>();
+            //Empleado
+            CreateMap<Models.Empleado, DTOs.EmpleadoGetDto>();
+            CreateMap<DTOs.EmpleadoCreateOrUpdateDto, Models.Empleado>();
         }
     }
 }

@@ -5,11 +5,7 @@ namespace GestionCitas.Models
 {
     public partial class Empleado : IMustHaveTenant
     {
-        public int NegocioId 
-        {
-            get => negocioid; // Mapea a la propiedad generada por scaffold
-            set => negocioid = value;
-        }
+      
     }
     
 }

@@ -37,7 +37,7 @@ public partial class GestionCitasContext : DbContext
         {
             if (typeof(IMustHaveTenant).IsAssignableFrom(entityType.ClrType))
             {
-                // Aplicamos el filtro: "Solo trae registros donde NegocioId coincida con el usuario actual"
+                // Aplicamos el filtro: "Solo trae registros donde negocioid coincida con el usuario actual"
                 var method = typeof(GestionCitasContext)
                     .GetMethod(nameof(SetGlobalQueryFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                     ?.MakeGenericMethod(entityType.ClrType);
@@ -46,18 +46,18 @@ public partial class GestionCitasContext : DbContext
             }
         }
 
-        modelBuilder.Entity<Cita>(entity =>
+        modelBuilder.Entity<Cita>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Cita>>)(entity =>
         {
             entity.HasKey(e => e.citaid).HasName("pk_citaid");
 
             entity.Property(e => e.citaid).UseIdentityAlwaysColumn();
-            entity.Property(e => e.estado).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Cita, string?>>)(e => e.estado)).HasMaxLength(255);
             entity.Property(e => e.fecha_hora_fin).HasColumnType("timestamp without time zone");
             entity.Property(e => e.fecha_hora_inicio).HasColumnType("timestamp without time zone");
-            entity.Property(e => e.observaciones).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Cita, string?>>)(e => e.observaciones)).HasMaxLength(255);
             entity.Property(e => e.precio_sugerido).HasPrecision(5, 2);
             entity.Property(e => e.precio_total).HasPrecision(5, 2);
-            entity.Property(e => e.recordatorio_enviado).HasColumnType("bit(1)");
+            entity.Property((System.Linq.Expressions.Expression<Func<Cita, System.Collections.BitArray?>>)(e => e.recordatorio_enviado)).HasColumnType("bit(1)");
 
             entity.HasOne(d => d.cliente).WithMany(p => p.cita)
                 .HasForeignKey(d => d.clienteid)
@@ -68,11 +68,11 @@ public partial class GestionCitasContext : DbContext
                 .HasConstraintName("fk_empleadoid");
 
             entity.HasOne(d => d.negocio).WithMany(p => p.cita)
-                .HasForeignKey(d => d.negocioid)
+                .HasForeignKey((System.Linq.Expressions.Expression<Func<Cita, object?>>)(d => d.negocioid))
                 .HasConstraintName("fk_negocioid");
-        });
+        }));
 
-        modelBuilder.Entity<Cita_Servicio>(entity =>
+        modelBuilder.Entity<Cita_Servicio>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Cita_Servicio>>)(entity =>
         {
             entity.HasKey(e => e.cita_serviciosid).HasName("pk_cita_serviciosid");
 
@@ -84,15 +84,15 @@ public partial class GestionCitasContext : DbContext
                 .HasConstraintName("fk_citaid");
 
             entity.HasOne(d => d.negocio).WithMany(p => p.cita_servicios)
-                .HasForeignKey(d => d.negocioid)
+                .HasForeignKey((System.Linq.Expressions.Expression<Func<Cita_Servicio, object?>>)(d => d.negocioid))
                 .HasConstraintName("fk_negocioid");
 
             entity.HasOne(d => d.servicio).WithMany(p => p.cita_servicios)
                 .HasForeignKey(d => d.servicioid)
                 .HasConstraintName("fk_servicioid");
-        });
+        }));
 
-        modelBuilder.Entity<Cliente>(entity =>
+        modelBuilder.Entity<Cliente>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Cliente>>)(entity =>
         {
             entity.HasKey(e => e.clienteid).HasName("pk_clienteid");
 
@@ -101,56 +101,56 @@ public partial class GestionCitasContext : DbContext
             entity.HasIndex(e => e.telefono, "clientes_telefono_key").IsUnique();
 
             entity.Property(e => e.clienteid).UseIdentityAlwaysColumn();
-            entity.Property(e => e.apellidos).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Cliente, string?>>)(e => e.apellidos)).HasMaxLength(255);
             entity.Property(e => e.email).HasMaxLength(255);
-            entity.Property(e => e.nombre).HasMaxLength(255);
-            entity.Property(e => e.notas_internas).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Cliente, string?>>)(e => e.nombre)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Cliente, string?>>)(e => e.notas_internas)).HasMaxLength(255);
             entity.Property(e => e.telefono).HasMaxLength(255);
 
             entity.HasOne(d => d.negocio).WithMany(p => p.clientes)
-                .HasForeignKey(d => d.negocioid)
+                .HasForeignKey((System.Linq.Expressions.Expression<Func<Cliente, object?>>)(d => d.negocioid))
                 .HasConstraintName("fk_negocioid");
-        });
+        }));
 
-        modelBuilder.Entity<Empleado>(entity =>
+        modelBuilder.Entity<Empleado>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Empleado>>)(entity =>
         {
             entity.HasKey(e => e.empleadoid).HasName("pk_empleadoid");
 
             entity.Property(e => e.empleadoid).UseIdentityAlwaysColumn();
-            entity.Property(e => e.color_agenda).HasMaxLength(255);
-            entity.Property(e => e.nombre).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Empleado, string?>>)(e => e.color_agenda)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Empleado, string?>>)(e => e.nombre)).HasMaxLength(255);
 
             entity.HasOne(d => d.negocio).WithMany(p => p.empleados)
-                .HasForeignKey(d => d.negocioid)
+                .HasForeignKey((System.Linq.Expressions.Expression<Func<Empleado, object?>>)(d => d.negocioid))
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_negocioid");
-        });
+        }));
 
-        modelBuilder.Entity<Negocio>(entity =>
+        modelBuilder.Entity<Negocio>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Negocio>>)(entity =>
         {
-            entity.HasKey(e => e.negocioid).HasName("pk_negocioid");
+            entity.HasKey((System.Linq.Expressions.Expression<Func<Negocio, object?>>)(e => e.negocioid)).HasName("pk_negocioid");
 
-            entity.Property(e => e.negocioid).UseIdentityAlwaysColumn();
-            entity.Property(e => e.conf_whatsapp).HasMaxLength(255);
-            entity.Property(e => e.direccion).HasMaxLength(255);
-            entity.Property(e => e.email).HasMaxLength(255);
-            entity.Property(e => e.localidad).HasMaxLength(255);
-            entity.Property(e => e.nombre).HasMaxLength(255);
-            entity.Property(e => e.telefono).HasMaxLength(255);
-        });
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, int>>)(e => (int)e.negocioid)).UseIdentityAlwaysColumn();
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.conf_whatsapp)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.direccion)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.email)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.localidad)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.nombre)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.telefono)).HasMaxLength(255);
+        }));
 
-        modelBuilder.Entity<Servicio>(entity =>
+        modelBuilder.Entity<Servicio>((Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Servicio>>)(entity =>
         {
             entity.HasKey(e => e.servicioid).HasName("pk_servicioid");
 
             entity.Property(e => e.servicioid).UseIdentityAlwaysColumn();
-            entity.Property(e => e.nombre).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Servicio, string?>>)(e => e.nombre)).HasMaxLength(255);
             entity.Property(e => e.precio_actual).HasPrecision(5, 2);
 
             entity.HasOne(d => d.negocio).WithMany(p => p.servicios)
-                .HasForeignKey(d => d.negocioid)
+                .HasForeignKey((System.Linq.Expressions.Expression<Func<Servicio, object?>>)(d => d.negocioid))
                 .HasConstraintName("fk_negocioid");
-        });
+        }));
 
         OnModelCreatingPartial(modelBuilder);
     }
@@ -161,7 +161,7 @@ public partial class GestionCitasContext : DbContext
 
     private void SetGlobalQueryFilter<T>(ModelBuilder modelBuilder) where T : class, IMustHaveTenant
     {
-        modelBuilder.Entity<T>().HasQueryFilter(e => e.NegocioId == _currentTenantService.NegocioId);
+        modelBuilder.Entity<T>().HasQueryFilter(e => e.negocioid == _currentTenantService.NegocioId);
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -176,7 +176,7 @@ public partial class GestionCitasContext : DbContext
                     // Si el servicio nos da un ID válido, lo forzamos en la entidad
                     if (_currentTenantService.NegocioId.HasValue)
                     {
-                        entry.Entity.NegocioId = _currentTenantService.NegocioId.Value;
+                        entry.Entity.negocioid = _currentTenantService.NegocioId.Value;
                     }
                     break;
             }
