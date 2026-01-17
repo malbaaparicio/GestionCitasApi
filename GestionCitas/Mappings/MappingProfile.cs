@@ -18,7 +18,7 @@ namespace GestionCitas.Mappings
             CreateMap<Models.Cita, DTOs.CitaGetDto>()
                 .ForMember(dest => dest.NombreCliente, opt => opt.MapFrom(src => src.cliente.nombre)) // Mapeo manual
                 .ForMember(dest => dest.NombreEmpleado, opt => opt.MapFrom(src => src.empleado.nombre)); // Mapeo manual;
-            CreateMap<DTOs.CitaCreateOrUpdateDto, Models.Cita>();
+            CreateMap<DTOs.CitaUpdateDto, Models.Cita>();
             CreateMap<DTOs.CitaCreateDto, Models.Cita>();
                
             //Cita_Servicio

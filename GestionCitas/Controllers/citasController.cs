@@ -58,19 +58,83 @@ namespace GestionCitas.Controllers
         // PUT: api/citas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> Putcita(int id, CitaCreateOrUpdateDto cita)
+        public async Task<ActionResult<CitaGetDto>> Putcita(int id, CitaUpdateDto cita)
         {
-            var citaExistente = await _context.citas.FindAsync(id);
+            var citaExistente = await _context.citas
+                .Include(c => c.cita_servicios)
+                .FirstOrDefaultAsync(c => c.citaid == id);
+
             if (citaExistente == null)
             {
                 return NotFound();
             }
             
-            _mapper.Map(cita, citaExistente);
-                       
+            var serviciosDb = await _context.servicios
+              .Where(z => cita.serviciosids.Contains(z.servicioid))
+              .ToListAsync();
+
+            //verificamos si existen todos
+            if (serviciosDb.Count() != cita.serviciosids.Count())
+            {
+                return BadRequest("Uno o más servicios no existen");
+            }
+
+            // 2. CÁLCULOS DE NEGOCIO
+            var duracionTotal = serviciosDb.Sum(s => s.duracion ?? 0); // Asumimos 0 si es null
+            var precioTotal = serviciosDb.Sum(s => s.precio_actual ?? 0);
+
+            var fechaInicio = cita.fecha_hora_inicio;
+            var fechaFin = fechaInicio.AddMinutes(duracionTotal);
+
+            // VALIDACIÓN DE AGENDA: Comprobar si el empleado ya está ocupado
+            // Buscamos citas que se solapen con el intervalo deseado
+            bool existeSolapamiento = await _context.citas
+                .AnyAsync(c =>
+                    c.empleadoid == (cita.empleadoid ?? citaExistente.empleadoid) && // Mismo empleado (nuevo o existente)
+                    c.citaid != id &&               // Excluir la cita que estamos editando
+                    c.estado != "Cancelada" &&            // Ignorar canceladas                        
+                    fechaFin > c.fecha_hora_inicio && // La cita solicitada acaba después de que otra empiece
+                    fechaInicio < c.fecha_hora_fin // La cita solicitada empieza antes de que otra acabe
+                );
+
+            if (existeSolapamiento)
+            {
+                return Conflict($"El empleado ya tiene una cita en ese horario ({fechaInicio} - {fechaFin}).");
+            }
+            citaExistente.clienteid = cita.clienteid ?? citaExistente.clienteid;
+            citaExistente.empleadoid = cita.empleadoid ?? citaExistente.empleadoid;
+            citaExistente.fecha_hora_inicio = fechaInicio;
+            citaExistente.fecha_hora_fin = fechaFin;     // Calculado
+            citaExistente.precio_total = precioTotal;    // Calculado
+            citaExistente.observaciones = cita.observaciones;
+            citaExistente.duracion_total = duracionTotal; // Calculado
+
+            
+            _context.cita_servicios.RemoveRange(citaExistente.cita_servicios);
+
+            // Añadimos los nuevos servicios
+            foreach (var servicio in serviciosDb)
+            {
+                var nuevoDetalle = new Cita_Servicio
+                {
+                    servicioid = servicio.servicioid,
+                    // Importante: Volvemos a "congelar" el precio y duración actuales
+                    precio_aplicado = servicio.precio_actual,
+                    duracion = servicio.duracion,
+                    // Vinculamos a la cita existente
+                    citaid = citaExistente.citaid,
+                    // OJO: EF Core a veces necesita ayuda con el NegocioId en entidades hijas insertadas manualmente
+                    // aunque el SaveChanges lo intente arreglar, es bueno asignarlo si lo tienes a mano, 
+                    // pero tu SaveChangesAsync ya se encarga de esto.
+                };
+
+                // Añadimos a la tabla directa o a la colección
+                _context.cita_servicios.Add(nuevoDetalle);
+            }
 
             try
             {
+                // EF Core ejecutará los DELETE y luego los INSERT en una sola transacción
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -110,6 +174,21 @@ namespace GestionCitas.Controllers
             var fechaInicio = cita.fecha_hora_inicio;
             var fechaFin = fechaInicio.AddMinutes(duracionTotal);
 
+            // VALIDACIÓN DE AGENDA: Comprobar si el empleado ya está ocupado
+            // Buscamos citas que se solapen con el intervalo deseado
+            bool existeSolapamiento = await _context.citas
+                .AnyAsync(c =>
+                    c.empleadoid == cita.empleadoid && // Mismo empleado
+                    c.estado != "Cancelada" &&            // Ignorar canceladas                        
+                    fechaFin > c.fecha_hora_inicio && // La cita solicitada acaba después de que otra empiece
+                    fechaInicio < c.fecha_hora_fin // La cita solicitada empieza antes de que otra acabe
+                );
+
+            if (existeSolapamiento)
+            {
+                return Conflict($"El empleado ya tiene una cita en ese horario ({fechaInicio} - {fechaFin}).");
+            }
+
             // 3. CREACIÓN DE LA ENTIDAD MAESTRA (Cabecera)
             // Aquí NO usamos AutoMapper directo porque hay mucha lógica calculada
             var nuevaCita = new Cita
@@ -120,6 +199,7 @@ namespace GestionCitas.Controllers
                 fecha_hora_fin = fechaFin,     // Calculado
                 precio_total = precioTotal,    // Calculado
                 observaciones = cita.observaciones,
+                duracion_total = duracionTotal, // Calculado
                 estado = "Pendiente" // Estado inicial por defecto
                 // NegocioId se inyecta solo en SaveChangesAsync
             };
@@ -172,6 +252,26 @@ namespace GestionCitas.Controllers
             _context.citas.Remove(cita);
             await _context.SaveChangesAsync();
 
+            return NoContent();
+        }
+
+        //PUT: api/citas/5/cancelar
+        [HttpPut("{id}/cancelar")]
+        public async Task<IActionResult> CancelarCita(int id, CitaCancelacionDto citaCancelacionDto)
+        {
+            var cita = await _context.citas.FindAsync(id);
+            if (cita == null)
+            {
+                return NotFound();
+            }
+            if (cita.estado == "Cancelada")
+            {
+                return BadRequest("La cita ya está cancelada.");
+            }
+            cita.estado = "Cancelada";
+            cita.observaciones = citaCancelacionDto.Observaciones;
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
