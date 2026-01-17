@@ -2,8 +2,10 @@
 {
     public class ServicioGetDto
     {
-        public int ServicioId { get; set; }
-        public string? Nombre { get; set; }      
-        public int Tiempo { get; set; }
+        public int servicioid { get; set; }
+        public string? nombre { get; set; }      
+        public int? duracion { get; set; }
+        public decimal? precio_actual { get; set; }
+
     }
 }
