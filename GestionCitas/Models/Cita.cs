@@ -4,8 +4,13 @@ using System.Collections.Generic;
 
 namespace GestionCitas.Models;
 
+
 public partial class Cita
 {
+    public Cita()
+    {
+        cita_servicios = new HashSet<Cita_Servicio>();
+    }
     public int citaid { get; set; }
 
     public int? clienteid { get; set; }
