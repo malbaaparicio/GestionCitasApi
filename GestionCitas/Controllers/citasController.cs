@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GestionCitas.Models;
 using GestionCitas.DTOs;
 using AutoMapper;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 
 namespace GestionCitas.Controllers
 {
@@ -26,16 +27,27 @@ namespace GestionCitas.Controllers
 
         // GET: api/citas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CitaGetDto>>> Getcitas()
+        public async Task<ActionResult<IEnumerable<CitaGetDto>>> Getcitas([FromQuery]CitaGetFechasDto citaFechas)
         {
+
+            // 1. Si no me pasan fechas, por defecto muestro el DIA ACTUAL (Protección de rendimiento)
+            DateTime inicio = citaFechas.fecha_desde ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            DateTime fin = citaFechas.fecha_hasta ?? inicio;
+
+            // 2. Ajustamos el fin para que incluya todo el último día (hasta las 23:59:59)
+            // Usamos una variable local, no modificamos el parámetro de entrada
+            DateTime finAjustado = new DateTime(fin.Year, fin.Month, fin.Day, 23, 59, 59);
+
             var citas = await _context.citas
                 .Include(c => c.cliente)
                 .Include(c => c.empleado)
+                .Where(c => c.fecha_hora_inicio >= inicio && c.fecha_hora_inicio <= finAjustado)
                 .OrderByDescending(c => c.fecha_hora_inicio)
                 .ToListAsync();
+
             var citasDto = _mapper.Map<List<CitaGetDto>>(citas);
             return Ok(citasDto);
-            
+
         }
 
         // GET: api/citas/5
@@ -106,6 +118,7 @@ namespace GestionCitas.Controllers
             citaExistente.fecha_hora_inicio = fechaInicio;
             citaExistente.fecha_hora_fin = fechaFin;     // Calculado
             citaExistente.precio_total = precioTotal;    // Calculado
+            citaExistente.precio_sugerido = precioTotal;    // Calculado
             citaExistente.observaciones = cita.observaciones;
             citaExistente.duracion_total = duracionTotal; // Calculado
 
@@ -197,6 +210,7 @@ namespace GestionCitas.Controllers
                 empleadoid = cita.empleadoid,
                 fecha_hora_inicio = fechaInicio,
                 fecha_hora_fin = fechaFin,     // Calculado
+                precio_sugerido = precioTotal,    // Calculado
                 precio_total = precioTotal,    // Calculado
                 observaciones = cita.observaciones,
                 duracion_total = duracionTotal, // Calculado
