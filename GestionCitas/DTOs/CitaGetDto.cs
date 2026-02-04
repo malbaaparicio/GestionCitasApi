@@ -10,6 +10,11 @@
         public decimal precio_sugerido { get; set; }
         public string NombreCliente { get; set; }
         public string NombreEmpleado { get; set; }
+        public string? observaciones { get; set; }
+        public int clienteid { get; set; }
+        public int empleadoid { get; set; }
+        public List<CitaServicioGetDto> Servicios { get; set; }
+
 
     }
 }

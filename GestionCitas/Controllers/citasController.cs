@@ -41,6 +41,7 @@ namespace GestionCitas.Controllers
             var citas = await _context.citas
                 .Include(c => c.cliente)
                 .Include(c => c.empleado)
+                .Include(c => c.cita_servicios)
                 .Where(c => c.fecha_hora_inicio >= inicio && c.fecha_hora_inicio <= finAjustado)
                 .OrderByDescending(c => c.fecha_hora_inicio)
                 .ToListAsync();
