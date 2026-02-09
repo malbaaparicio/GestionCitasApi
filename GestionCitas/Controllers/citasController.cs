@@ -258,12 +258,15 @@ namespace GestionCitas.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Deletecita(int id)
         {
-            var cita = await _context.citas.FindAsync(id);
+            var cita = await _context.citas
+                .Include(c=>c.cita_servicios)
+                .FirstOrDefaultAsync(c => c.citaid == id);
+
             if (cita == null)
             {
                 return NotFound();
             }
-
+            _context.cita_servicios.RemoveRange(cita.cita_servicios);
             _context.citas.Remove(cita);
             await _context.SaveChangesAsync();
 

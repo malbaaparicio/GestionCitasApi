@@ -14,19 +14,19 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="esIqtNTbqWBWAwI_42cH-1" value="CLIENTES" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="1" vertex="1">
+        <mxCell id="esIqtNTbqWBWAwI_42cH-1" value="CLIENTES" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#006633;strokeColor=#2D7600;fontColor=#ffffff;" parent="1" vertex="1">
           <mxGeometry x="60" y="20" width="160" height="170" as="geometry" />
         </mxCell>
         <mxCell id="esIqtNTbqWBWAwI_42cH-2" value="&lt;div&gt;CLIENTEID&lt;/div&gt;TELEFONO&lt;div&gt;EMAIL&lt;/div&gt;&lt;div&gt;NOMBRE&lt;/div&gt;&lt;div&gt;APELLIDOS&lt;/div&gt;&lt;div&gt;NEGOCIOID&lt;/div&gt;&lt;div&gt;NOTAS_INTERNAS&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" parent="esIqtNTbqWBWAwI_42cH-1" vertex="1">
           <mxGeometry y="50" width="160" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="esIqtNTbqWBWAwI_42cH-3" value="SERVICIO" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+        <mxCell id="esIqtNTbqWBWAwI_42cH-3" value="SERVICIO" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="680" y="80" width="160" height="140" as="geometry" />
         </mxCell>
         <mxCell id="esIqtNTbqWBWAwI_42cH-4" value="&lt;div&gt;SERVICIOID&lt;/div&gt;&lt;div&gt;NOMBRE&lt;/div&gt;&lt;div&gt;DURACION&lt;/div&gt;&lt;div&gt;PRECIO_ACTUAL&lt;/div&gt;&lt;div&gt;NEGOCIOID&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" parent="esIqtNTbqWBWAwI_42cH-3" vertex="1">
           <mxGeometry y="50" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="esIqtNTbqWBWAwI_42cH-9" value="CITAS" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+        <mxCell id="esIqtNTbqWBWAwI_42cH-9" value="CITAS" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="50" y="360" width="180" height="240" as="geometry" />
         </mxCell>
         <mxCell id="esIqtNTbqWBWAwI_42cH-10" value="&lt;div&gt;CITAID&lt;/div&gt;FECHA_HORA_INICIO&lt;div&gt;FECHA_HORA_FIN&lt;br&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;CLIENTEID (FK)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;PRECIO_TOTAL&lt;/div&gt;&lt;div&gt;PRECIO_SUGERIDO&lt;/div&gt;&lt;div&gt;DURACION_TOTAL&lt;/div&gt;&lt;div&gt;ESTADO&lt;/div&gt;&lt;div&gt;NEGOCIOID&lt;/div&gt;&lt;div&gt;EMPLEADOID&lt;/div&gt;&lt;div&gt;RECORDATORIO_ENVIADO&lt;br&gt;&lt;div&gt;OBSERVACIONES&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" parent="esIqtNTbqWBWAwI_42cH-9" vertex="1">
@@ -50,13 +50,13 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="esIqtNTbqWBWAwI_42cH-27" value="CITA_SERVICIO" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+        <mxCell id="esIqtNTbqWBWAwI_42cH-27" value="CITA_SERVICIO" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="680" y="450" width="160" height="150" as="geometry" />
         </mxCell>
         <mxCell id="esIqtNTbqWBWAwI_42cH-28" value="&lt;div&gt;CITA_SERVICIOID&lt;/div&gt;CITAID (FK)&lt;br&gt;&lt;div&gt;SERVICIOID (FK)&lt;/div&gt;&lt;div&gt;PRECIO_APLICADO&lt;/div&gt;&lt;div&gt;DURACION&lt;/div&gt;&lt;div&gt;NEGOCIOID&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" parent="esIqtNTbqWBWAwI_42cH-27" vertex="1">
           <mxGeometry y="50" width="160" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="-rxEAimT8YSDAhCCyz2H-1" value="NEGOCIOS" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+        <mxCell id="-rxEAimT8YSDAhCCyz2H-1" value="NEGOCIOS" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="380" y="20" width="160" height="170" as="geometry" />
         </mxCell>
         <mxCell id="-rxEAimT8YSDAhCCyz2H-2" value="&lt;div&gt;NEGOCIOID&lt;/div&gt;NOMBRE&lt;br&gt;&lt;div&gt;TELEFONO&lt;/div&gt;&lt;div&gt;DIRECCION&lt;/div&gt;&lt;div&gt;LOCALIDAD&lt;/div&gt;&lt;div&gt;EMAIL&lt;/div&gt;&lt;div&gt;CONF_WHATSAPP&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" parent="-rxEAimT8YSDAhCCyz2H-1" vertex="1">
@@ -73,7 +73,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="-rxEAimT8YSDAhCCyz2H-6" value="EMPLEADOS" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
+        <mxCell id="-rxEAimT8YSDAhCCyz2H-6" value="EMPLEADOS" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="380" y="240" width="150" height="130" as="geometry" />
         </mxCell>
         <mxCell id="-rxEAimT8YSDAhCCyz2H-7" value="&lt;div&gt;EMPLEADOID&lt;/div&gt;NOMBRE&lt;br&gt;&lt;div&gt;NEGOCIOID&lt;/div&gt;&lt;div&gt;COLOR_AGENDA&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" parent="-rxEAimT8YSDAhCCyz2H-6" vertex="1">
