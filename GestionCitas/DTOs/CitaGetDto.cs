@@ -13,6 +13,7 @@
         public string? observaciones { get; set; }
         public int clienteid { get; set; }
         public int empleadoid { get; set; }
+        public string? color_agenda_empleado { get; set; }
         public List<CitaServicioGetDto> Servicios { get; set; }
 
 
