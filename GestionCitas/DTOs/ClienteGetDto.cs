@@ -2,11 +2,11 @@
 {
     public class ClienteGetDto
     {
-        public int ClienteId { get; set; }
-        public string? Nombre { get; set; }
-        public string? Apellidos { get; set; }
-        public string? Email { get; set; }
-        public string? Telefono { get; set; }
+        public int clienteid { get; set; }
+        public string? nombre { get; set; }
+        public string? apellidos { get; set; }
+        public string? email { get; set; }
+        public string? telefono { get; set; }
         public string? notas_internas { get; set; }
 
     }
