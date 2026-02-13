@@ -88,9 +88,15 @@ namespace GestionCitas.Controllers
         public async Task<ActionResult<ClienteGetDto>> Postcliente(ClienteCreateOrUpdateDto cliente)
         {
             var nuevoCliente = _mapper.Map<Cliente>(cliente);
-
-            _context.clientes.Add(nuevoCliente);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.clientes.Add(nuevoCliente);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                return BadRequest("Ocurrió un error al guardar el cliente");
+            }
 
             var clienteDto = _mapper.Map<ClienteGetDto>(nuevoCliente);
 

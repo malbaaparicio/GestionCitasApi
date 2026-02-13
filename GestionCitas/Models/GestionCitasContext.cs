@@ -98,7 +98,7 @@ public partial class GestionCitasContext : DbContext
 
             entity.HasIndex(e => e.email, "clientes_email_key").IsUnique();
 
-            entity.HasIndex(e => e.telefono, "clientes_telefono_key").IsUnique();
+            entity.HasIndex(e => new {e.negocioid, e.telefono}, "clientes_telefono_key").IsUnique();
 
             entity.Property(e => e.clienteid).UseIdentityAlwaysColumn();
             entity.Property((System.Linq.Expressions.Expression<Func<Cliente, string?>>)(e => e.apellidos)).HasMaxLength(255);
