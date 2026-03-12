@@ -15,6 +15,7 @@ public partial class Empleado
     public int negocioid { get; set; }
 
     public string? color_agenda { get; set; }
+    public string? estado { get; set; }
 
     public virtual ICollection<Cita> cita { get; set; } = new List<Cita>();
 

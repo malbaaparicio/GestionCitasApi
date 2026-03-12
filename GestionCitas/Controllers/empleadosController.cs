@@ -87,6 +87,7 @@ namespace GestionCitas.Controllers
         public async Task<ActionResult<EmpleadoGetDto>> PostEmpleado(EmpleadoCreateOrUpdateDto empleado)
         {
             var nuevoEmpleado = _mapper.Map<Empleado>(empleado);
+            nuevoEmpleado.estado = "Activo"; // Establecer estado por defecto al crear un nuevo empleado
 
             _context.empleados.Add(nuevoEmpleado);
             await _context.SaveChangesAsync();

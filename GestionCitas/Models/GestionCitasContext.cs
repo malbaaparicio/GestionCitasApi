@@ -121,6 +121,7 @@ public partial class GestionCitasContext : DbContext
             entity.Property((System.Linq.Expressions.Expression<Func<Empleado, string?>>)(e => e.nombre)).HasMaxLength(255);
             entity.Property((System.Linq.Expressions.Expression<Func<Empleado, string?>>)(e => e.apellidos)).HasMaxLength(255);
             entity.Property((System.Linq.Expressions.Expression<Func<Empleado, string?>>)(e => e.telefono)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Empleado, string?>>)(e => e.estado)).HasMaxLength(255);
 
             entity.HasOne(d => d.negocio).WithMany(p => p.empleados)
                 .HasForeignKey((System.Linq.Expressions.Expression<Func<Empleado, object?>>)(d => d.negocioid))

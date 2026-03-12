@@ -8,5 +8,6 @@
         public string? telefono { get; set; }
         public int negocioid { get; set; }
         public string? color_agenda { get; set; }
+        public string? estado { get; set; }
     }
 }

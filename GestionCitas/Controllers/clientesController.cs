@@ -107,12 +107,12 @@ namespace GestionCitas.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Deletecliente(int id)
         {
-            var cliente = await _context.clientes.FindAsync(id);
+            var cliente = await _context.clientes             
+                .FirstOrDefaultAsync(c => c.clienteid == id);
             if (cliente == null)
             {
-                return NotFound();
-            }
-
+                return NotFound();            }
+            
             _context.clientes.Remove(cliente);
             await _context.SaveChangesAsync();
 
