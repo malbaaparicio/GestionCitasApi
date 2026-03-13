@@ -87,6 +87,7 @@ namespace GestionCitas.Controllers
         public async Task<ActionResult<ServicioGetDto>> Postservicio(ServicioCreateOrUpdateDto servicio)
         {
             var nuevoServicio = _mapper.Map<Servicio>(servicio);
+            nuevoServicio.estado = "Activo"; // Establecer el estado por defecto al crear un nuevo servicio
 
             _context.servicios.Add(nuevoServicio);
             await _context.SaveChangesAsync();

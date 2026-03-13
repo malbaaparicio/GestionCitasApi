@@ -14,6 +14,7 @@ public partial class Servicio
     public int? duracion { get; set; }
 
     public decimal? precio_actual { get; set; }
+    public string? estado { get; set; }
 
     public virtual ICollection<Cita_Servicio> cita_servicios { get; set; } = new List<Cita_Servicio>();
 

@@ -148,6 +148,7 @@ public partial class GestionCitasContext : DbContext
 
             entity.Property(e => e.servicioid).UseIdentityAlwaysColumn();
             entity.Property((System.Linq.Expressions.Expression<Func<Servicio, string?>>)(e => e.nombre)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Servicio, string?>>)(e => e.estado)).HasMaxLength(255);
             entity.Property(e => e.precio_actual).HasPrecision(5, 2);
 
             entity.HasOne(d => d.negocio).WithMany(p => p.servicios)

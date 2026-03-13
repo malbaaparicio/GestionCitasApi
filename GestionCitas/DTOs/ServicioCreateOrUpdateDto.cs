@@ -5,6 +5,7 @@
         public string? nombre { get; set; }
         public int? duracion { get; set; }
         public decimal? precio_actual { get; set; }
+        public string? estado { get; set; }
 
     }
 }
