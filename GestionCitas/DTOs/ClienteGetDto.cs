@@ -8,6 +8,7 @@
         public string? email { get; set; }
         public string? telefono { get; set; }
         public string? notas_internas { get; set; }
+        public string? estado { get; set; }
 
     }
 }

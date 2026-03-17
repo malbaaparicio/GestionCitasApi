@@ -18,6 +18,7 @@ public partial class Cliente
     public int negocioid { get; set; }
 
     public string? notas_internas { get; set; }
+    public string? estado { get; set; }
 
     public virtual ICollection<Cita> cita { get; set; } = new List<Cita>();
 

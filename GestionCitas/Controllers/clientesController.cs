@@ -88,6 +88,7 @@ namespace GestionCitas.Controllers
         public async Task<ActionResult<ClienteGetDto>> Postcliente(ClienteCreateOrUpdateDto cliente)
         {
             var nuevoCliente = _mapper.Map<Cliente>(cliente);
+            nuevoCliente.estado = "Activo";
             try
             {
                 _context.clientes.Add(nuevoCliente);
