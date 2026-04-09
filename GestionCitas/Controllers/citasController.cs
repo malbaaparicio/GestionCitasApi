@@ -41,7 +41,7 @@ namespace GestionCitas.Controllers
             var citas = await _context.citas
                 .Include(c => c.cliente)
                 .Include(c => c.empleado)
-                .Include(c => c.cita_servicios)
+                .Include(c => c.cita_servicios).ThenInclude(cs => cs.servicio) // Incluimos los servicios para el mapeo manual
                 .Where(c => c.fecha_hora_inicio >= inicio && c.fecha_hora_inicio <= finAjustado)
                 .OrderByDescending(c => c.fecha_hora_inicio)
                 .ToListAsync();
@@ -200,7 +200,7 @@ namespace GestionCitas.Controllers
 
             if (existeSolapamiento)
             {
-                return Conflict($"El empleado ya tiene una cita en ese horario ({fechaInicio} - {fechaFin}).");
+                return Conflict($"El  empleado ya tiene una cita en ese horario ({fechaInicio} - {fechaFin}).");
             }
 
             // 3. CREACIÓN DE LA ENTIDAD MAESTRA (Cabecera)

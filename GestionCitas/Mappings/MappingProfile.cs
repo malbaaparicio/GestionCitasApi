@@ -27,7 +27,8 @@ namespace GestionCitas.Mappings
             CreateMap<DTOs.CitaCreateDto, Models.Cita>();
                
             //Cita_Servicio
-            CreateMap<Models.Cita_Servicio, DTOs.CitaServicioGetDto>();
+            CreateMap<Models.Cita_Servicio, DTOs.CitaServicioGetDto>()
+                .ForMember(dest => dest.nombre_servicio, opt => opt.MapFrom(src => src.servicio.nombre));
             CreateMap<DTOs.CitaServicioCreateOrUpdateDto, Models.Cita_Servicio>();
             //Empleado
             CreateMap<Models.Empleado, DTOs.EmpleadoGetDto>();

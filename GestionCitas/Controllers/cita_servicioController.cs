@@ -28,7 +28,9 @@ namespace GestionCitas.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CitaServicioGetDto>>> Getcita_servicios()
         {
-            var cita_servicios = await _context.cita_servicios.ToListAsync();
+            var cita_servicios = await _context.cita_servicios
+                .Include(c => c.servicio)
+                .ToListAsync();
             var citaServiciosDto = _mapper.Map<List<CitaServicioGetDto>>(cita_servicios);
             return Ok(citaServiciosDto);
             
