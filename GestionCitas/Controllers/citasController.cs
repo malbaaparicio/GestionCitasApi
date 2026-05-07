@@ -121,6 +121,7 @@ namespace GestionCitas.Controllers
             citaExistente.precio_total = precioTotal;    // Calculado
             citaExistente.precio_sugerido = precioTotal;    // Calculado
             citaExistente.observaciones = cita.observaciones;
+            citaExistente.estado = cita.estado ?? citaExistente.estado;
             citaExistente.duracion_total = duracionTotal; // Calculado
 
             
@@ -215,7 +216,7 @@ namespace GestionCitas.Controllers
                 precio_total = precioTotal,    // Calculado
                 observaciones = cita.observaciones,
                 duracion_total = duracionTotal, // Calculado
-                estado = "Pendiente" // Estado inicial por defecto
+                estado = "Confirmada" // Estado inicial por defecto
                 // NegocioId se inyecta solo en SaveChangesAsync
             };
 
