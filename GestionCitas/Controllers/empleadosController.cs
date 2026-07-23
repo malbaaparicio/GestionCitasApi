@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using GestionCitas.Models;
 using GestionCitas.DTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestionCitas.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class empleadosController : ControllerBase

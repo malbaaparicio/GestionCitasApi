@@ -9,9 +9,11 @@ using GestionCitas.Models;
 using AutoMapper;
 using GestionCitas.DTOs;
 using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestionCitas.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class clientesController : ControllerBase

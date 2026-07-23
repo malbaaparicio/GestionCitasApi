@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using GestionCitas.Models;
 using AutoMapper;
 using GestionCitas.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestionCitas.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class cita_servicioController : ControllerBase
