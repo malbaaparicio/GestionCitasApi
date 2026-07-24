@@ -54,6 +54,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             // Validamos que el token no haya caducado
             ValidateLifetime = true
         };
+        // AÑADE ESTE BLOQUE NUEVO 
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                System.Diagnostics.Debug.WriteLine("FALLO DE AUTENTICACIÓN: " + context.Exception.Message);
+                Console.WriteLine("FALLO DE AUTENTICACIÓN: " + context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                System.Diagnostics.Debug.WriteLine($"CHALLENGE: {context.Error}, {context.ErrorDescription}");
+                Console.WriteLine($"CHALLENGE: {context.Error}, {context.ErrorDescription}");
+                return Task.CompletedTask;
+            }
+        };
     });
 
 // Añadimos también el servicio de Autorización
