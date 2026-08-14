@@ -32,45 +32,48 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        // La URL de tu servidor Keycloak
-        options.Authority = builder.Configuration["Keycloak:Authority"];
-        
-        // Desactivamos el requisito de HTTPS porque en local (Docker) estamos usando HTTP
-        options.RequireHttpsMetadata = false; 
 
-        options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication(options =>
+{
+    // Obligamos a .NET a usar Bearer para todo por defecto
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.Authority = builder.Configuration["Keycloak:Authority"];
+    options.RequireHttpsMetadata = false;
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Keycloak:Authority"],
+        ValidateAudience = false,
+        ValidateLifetime = true
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        // NUEVO: Este evento salta en cuanto llega la petición HTTP
+        OnMessageReceived = context =>
         {
-            // Validamos que el token venga de nuestro Keycloak
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["Keycloak:Authority"],
-            
-            // Por ahora desactivamos la validación de la audiencia para evitar bloqueos
-            // mientras conectamos el frontend. Lo activaremos en producción.
-            ValidateAudience = false,
-            
-            // Validamos que el token no haya caducado
-            ValidateLifetime = true
-        };
-        // AÑADE ESTE BLOQUE NUEVO 
-        options.Events = new JwtBearerEvents
+            var authHeader = context.Request.Headers["Authorization"].ToString();
+            Console.WriteLine($"\n CABECERA RECIBIDA EN .NET: {(string.IsNullOrEmpty(authHeader) ? "NINGUNA" : authHeader.Substring(0, Math.Min(20, authHeader.Length)) + "...")}\n");
+            return Task.CompletedTask;
+        },
+        OnAuthenticationFailed = context =>
         {
-            OnAuthenticationFailed = context =>
-            {
-                System.Diagnostics.Debug.WriteLine("FALLO DE AUTENTICACIÓN: " + context.Exception.Message);
-                Console.WriteLine("FALLO DE AUTENTICACIÓN: " + context.Exception.Message);
-                return Task.CompletedTask;
-            },
-            OnChallenge = context =>
-            {
-                System.Diagnostics.Debug.WriteLine($"CHALLENGE: {context.Error}, {context.ErrorDescription}");
-                Console.WriteLine($"CHALLENGE: {context.Error}, {context.ErrorDescription}");
-                return Task.CompletedTask;
-            }
-        };
-    });
+            Console.WriteLine(" FALLO DE AUTENTICACIÓN: " + context.Exception.Message);
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            Console.WriteLine($" CHALLENGE: {context.Error}, {context.ErrorDescription}");
+            return Task.CompletedTask;
+        }
+    };
+});
 
 // Añadimos también el servicio de Autorización
 builder.Services.AddAuthorization();
@@ -82,11 +85,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();  
     
 }
+app.UseRouting();
 app.UseCors("PermitirReact");
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.UseAuthentication(); // 1º ¿Quién eres? (Valida el Token)
 app.UseAuthorization();  // 2º ¿Tienes permiso? (Valida los Roles)
