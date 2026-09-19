@@ -69,6 +69,62 @@ namespace GestionCitas.Controllers
 
             
         }
+        // GET: api/citas/huecos
+        [HttpGet("huecos")]
+        public async Task<ActionResult<IEnumerable<string>>> GetHuecosLibres(
+        [FromQuery] DateTime fecha,
+        [FromQuery] int duracionMinutos,
+        [FromQuery] int? empleadoId = null) // Empleado opcional
+        {
+            // 1. Definimos el horario comercial fijo y los "saltos" (granularidad)
+            var horaApertura = new TimeSpan(8, 0, 0);  // 08:00
+            var horaCierre = new TimeSpan(20, 0, 0); // 20:00
+            var granularidadMinutos = 15; // Buscamos huecos cada 15 minutos (08:00, 08:15, 08:30...)
+
+            // 2. Preparamos el rango de fechas para la consulta a la BD
+            var inicioDia = fecha.Date;
+            var finDia = inicioDia.AddDays(1);
+
+            // 3. Extraemos las citas de ese día (EF Core ya filtra por negocioid automáticamente)
+            var query = _context.citas
+                .Where(c => c.fecha_hora_inicio >= inicioDia && c.fecha_hora_inicio < finDia)
+                .Where(c => c.estado != "Cancelada"); // Las canceladas no ocupan hueco
+
+            // Si nos pasan un empleado en concreto, filtramos también por él
+            if (empleadoId.HasValue)
+            {
+                query = query.Where(c => c.empleadoid == empleadoId.Value);
+            }
+
+            var citasDelDia = await query.ToListAsync();
+
+            // 4. Algoritmo generador de huecos
+            var huecosLibres = new List<string>();
+            var horaActual = horaApertura;
+
+            // Iteramos mientras el servicio propuesto termine antes o justo a la hora de cierre
+            while (horaActual.Add(TimeSpan.FromMinutes(duracionMinutos)) <= horaCierre)
+            {
+                var inicioPropuesto = inicioDia.Add(horaActual);
+                var finPropuesto = inicioPropuesto.AddMinutes(duracionMinutos);
+
+                // Comprobamos si el hueco propuesto choca con ALGUNA cita existente
+                bool solapa = citasDelDia.Any(c =>
+                    inicioPropuesto < c.fecha_hora_fin && finPropuesto > c.fecha_hora_inicio
+                );
+
+                if (!solapa)
+                {
+                    // Si no choca con nada, es un hueco válido. Lo guardamos en formato "HH:mm"
+                    huecosLibres.Add(horaActual.ToString(@"hh\:mm"));
+                }
+
+                // Damos el salto temporal para la siguiente comprobación
+                horaActual = horaActual.Add(TimeSpan.FromMinutes(granularidadMinutos));
+            }
+
+            return Ok(huecosLibres);
+        }
 
         // PUT: api/citas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
