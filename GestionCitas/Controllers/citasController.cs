@@ -10,6 +10,7 @@ using GestionCitas.DTOs;
 using AutoMapper;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.AspNetCore.Authorization;
+using Humanizer;
 
 namespace GestionCitas.Controllers
 {
@@ -19,12 +20,14 @@ namespace GestionCitas.Controllers
     public class citasController : ControllerBase
     {
         private readonly GestionCitasContext _context;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly IMapper _mapper;
 
-        public citasController(GestionCitasContext context, IMapper mapper)
+        public citasController(GestionCitasContext context, IServiceScopeFactory scopeFactory, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            _scopeFactory = scopeFactory;
         }
 
         // GET: api/citas
@@ -308,6 +311,22 @@ namespace GestionCitas.Controllers
 
             // Rellenamos manual lo que falta (porque nuevaCita.cliente es null al no haber hecho Include al guardar)
             // Opcional: Podrías hacer una query extra para traer nombres si es vital devolverlos en el Response del POST.
+            _ = Task.Run(async () =>
+            {
+                // Creamos un sub-espacio de memoria que no morirá cuando el controlador responda
+                using var scope = _scopeFactory.CreateScope();
+                var whatsappService = scope.ServiceProvider.GetRequiredService<IWhatsAppNotificador>();
+
+                // Aquí puedes extraer el teléfono del cliente desde la BD si el DTO no lo trae
+                // Simulamos un teléfono para la prueba
+                string telefonoDestino = "+34670403589";
+
+                await whatsappService.EnviarConfirmacionCitaAsync(
+                    telefonoDestino,
+                    "Cliente de Prueba",
+                    nuevaCita.fecha_hora_inicio 
+                );
+            });
 
             return CreatedAtAction("GetCitas", new { id = nuevaCita.citaid }, resultDto);
 
