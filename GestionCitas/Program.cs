@@ -79,7 +79,7 @@ builder.Services.AddAuthentication(options =>
 // Añadimos también el servicio de Autorización
 builder.Services.AddAuthorization();
 
-builder.Services.AddTransient<IWhatsAppNotificador, TwilioWhatsAppService>();
+builder.Services.AddHttpClient<IWhatsAppNotificador, MetaWhatsAppService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
