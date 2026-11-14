@@ -17,7 +17,8 @@ public partial class Negocio
 
     public string? email { get; set; }
 
-    public string? conf_whatsapp { get; set; }
+    public string? conf_whatsapp_number_id { get; set; }
+    public string? conf_whatsapp_token { get; set; }
 
     public virtual ICollection<Cita> cita { get; set; } = new List<Cita>();
 

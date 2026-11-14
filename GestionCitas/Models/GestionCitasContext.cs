@@ -135,7 +135,8 @@ public partial class GestionCitasContext : DbContext
             entity.HasKey((System.Linq.Expressions.Expression<Func<Negocio, object?>>)(e => e.negocioid)).HasName("pk_negocioid");
 
             entity.Property((System.Linq.Expressions.Expression<Func<Negocio, int>>)(e => (int)e.negocioid)).UseIdentityAlwaysColumn();
-            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.conf_whatsapp)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.conf_whatsapp_number_id)).HasMaxLength(255);
+            entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.conf_whatsapp_token)).HasMaxLength(750);
             entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.direccion)).HasMaxLength(255);
             entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.email)).HasMaxLength(255);
             entity.Property((System.Linq.Expressions.Expression<Func<Negocio, string?>>)(e => e.localidad)).HasMaxLength(255);
