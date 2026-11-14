@@ -322,6 +322,7 @@ namespace GestionCitas.Controllers
                 string telefonoDestino = "+34670403589";
 
                 await whatsappService.EnviarConfirmacionCitaAsync(
+                    nuevaCita.negocioid,
                     telefonoDestino,
                     "Cliente de Prueba",
                     nuevaCita.fecha_hora_inicio 

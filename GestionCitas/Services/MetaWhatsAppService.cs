@@ -3,35 +3,48 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using GestionCitas.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 public class MetaWhatsAppService : IWhatsAppNotificador
 {
     private readonly HttpClient _httpClient;
-    private readonly IConfiguration _config;
+    private readonly GestionCitasContext _context;
     private readonly ILogger<MetaWhatsAppService> _logger;
 
-    public MetaWhatsAppService(HttpClient httpClient, IConfiguration config, ILogger<MetaWhatsAppService> logger)
+    public MetaWhatsAppService(HttpClient httpClient, GestionCitasContext context, ILogger<MetaWhatsAppService> logger)
     {
         _httpClient = httpClient;
-        _config = config;
+        _context = context;
         _logger = logger;
     }
 
-    public async Task EnviarConfirmacionCitaAsync(string telefonoCliente, string nombreCliente, DateTime? fechaCita)
+    public async Task EnviarConfirmacionCitaAsync(int negocioid, string telefonoCliente, string nombreCliente, DateTime? fechaCita)
     {
         try
-        {
-            var token = _config["MetaWhatsApp:AccessToken"];
-            var phoneNumberId = _config["MetaWhatsApp:PhoneNumberId"];
+        {            
+            var negocio = await _context.negocios.FindAsync(negocioid);
+            // Si el negocio no existe o no tiene WhatsApp configurado, salimos sin lanzar error
+            if (negocio == null ||
+                string.IsNullOrWhiteSpace(negocio.conf_whatsapp_number_id) ||
+                string.IsNullOrWhiteSpace(negocio.conf_whatsapp_token))
+            {
+                _logger.LogInformation($"El negocio {negocioid} no tiene credenciales de WhatsApp configuradas. Se omite el envío.");
+                return;
+            }
+
+            var token = negocio.conf_whatsapp_token;
+            var phoneNumberId = negocio.conf_whatsapp_number_id;
 
             // Meta exige el número con prefijo de país pero sin el símbolo '+' (ej: 34670403589)
             var numeroLimpio = telefonoCliente.Replace(" ", "").TrimStart('+');
 
             var url = $"https://graph.facebook.com/v25.0/{phoneNumberId}/messages";
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", negocio.conf_whatsapp_token);                      
 
             var payload = new
             {
@@ -40,17 +53,30 @@ public class MetaWhatsAppService : IWhatsAppNotificador
                 type = "template",
                 template = new
                 {
-                    name = "hello_world",
-                    language = new { code = "en_US" }
+                    name = "confirmacion_cita",
+                    language = new { code = "es" },
+                    components = new[]
+                    {
+                        new
+                        {
+                            type = "body",
+                            parameters = new[]
+                            {
+                                new { type = "text", text = nombreCliente },
+                                new { type = "text", text = fechaCita?.ToString("dd/MM/yyyy") ?? "" },
+                                new { type = "text", text = fechaCita?.ToString("HH:mm") ?? "" }
+                            }
+                        }
+                    }
                 }
             };
 
-            var response = await _httpClient.PostAsJsonAsync(url, payload);
+            request.Content = JsonContent.Create(payload);
+            var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"\n ✅ WHATSAPP ENVIADO CON ÉXITO A {numeroLimpio} \n");
-                _logger.LogInformation($"WhatsApp enviado con éxito vía Meta a {numeroLimpio}");
+                _logger.LogInformation($"WhatsApp enviado con éxito vía Meta a {numeroLimpio} (Negocio ID: {negocioid})");
             }
             else
             {
@@ -58,6 +84,7 @@ public class MetaWhatsAppService : IWhatsAppNotificador
                 Console.WriteLine($"\n ❌ ERROR DE META: {detalleError} \n");
                 _logger.LogError($"Error de Meta al enviar WhatsApp: {detalleError}");
             }
+
         }
         catch (Exception ex)
         {

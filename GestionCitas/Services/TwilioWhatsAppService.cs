@@ -20,7 +20,7 @@ public class TwilioWhatsAppService : IWhatsAppNotificador
         TwilioClient.Init(_config["Twilio:AccountSid"], _config["Twilio:AuthToken"]);
     }
 
-    public async Task EnviarConfirmacionCitaAsync(string telefonoCliente, string nombreCliente, DateTime? fechaCita)
+    public async Task EnviarConfirmacionCitaAsync(int negocioid, string telefonoCliente, string nombreCliente, DateTime? fechaCita)
     {
         try
         {

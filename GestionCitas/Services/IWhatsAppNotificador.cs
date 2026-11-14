@@ -2,5 +2,5 @@
 using System.Threading.Tasks;
 
 public interface IWhatsAppNotificador
-{    Task EnviarConfirmacionCitaAsync(string telefonoCliente, string nombreCliente, DateTime? fechaCita);
+{    Task EnviarConfirmacionCitaAsync(int negocioid, string telefonoCliente, string nombreCliente, DateTime? fechaCita);
 }
