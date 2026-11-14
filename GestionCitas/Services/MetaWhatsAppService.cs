@@ -25,7 +25,10 @@ public class MetaWhatsAppService : IWhatsAppNotificador
     {
         try
         {            
-            var negocio = await _context.negocios.FindAsync(negocioid);
+            var negocio = await _context.negocios
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(n => n.negocioid == negocioid);
             // Si el negocio no existe o no tiene WhatsApp configurado, salimos sin lanzar error
             if (negocio == null ||
                 string.IsNullOrWhiteSpace(negocio.conf_whatsapp_number_id) ||
