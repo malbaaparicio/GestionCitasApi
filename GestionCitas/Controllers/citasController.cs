@@ -259,7 +259,7 @@ namespace GestionCitas.Controllers
                     fechaFin > c.fecha_hora_inicio && // La cita solicitada acaba después de que otra empiece
                     fechaInicio < c.fecha_hora_fin // La cita solicitada empieza antes de que otra acabe
                 );
-
+            
             if (existeSolapamiento)
             {
                 return Conflict($"El  empleado ya tiene una cita en ese horario ({fechaInicio} - {fechaFin}).");
@@ -319,12 +319,20 @@ namespace GestionCitas.Controllers
 
                 // Aquí puedes extraer el teléfono del cliente desde la BD si el DTO no lo trae
                 // Simulamos un teléfono para la prueba
-                string telefonoDestino = "+34670403589";
-
+                
+                var cliente = await _context.clientes.FindAsync(nuevaCita.clienteid);
+                string telefonoDestino = "";
+                string nombreCliente = "";
+                if(cliente != null)
+                {
+                    telefonoDestino = cliente.telefono ?? "34670403589"; 
+                    nombreCliente = cliente.nombre ?? "Cliente de Prueba";
+                }
+               
                 await whatsappService.EnviarConfirmacionCitaAsync(
                     nuevaCita.negocioid,
                     telefonoDestino,
-                    "Cliente de Prueba",
+                    nombreCliente,
                     nuevaCita.fecha_hora_inicio 
                 );
             });
