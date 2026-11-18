@@ -309,6 +309,8 @@ namespace GestionCitas.Controllers
 
             var resultDto = _mapper.Map<CitaGetDto>(nuevaCita);
 
+            var cliente = await _context.clientes.FindAsync(nuevaCita.clienteid);
+
             // Rellenamos manual lo que falta (porque nuevaCita.cliente es null al no haber hecho Include al guardar)
             // Opcional: Podrías hacer una query extra para traer nombres si es vital devolverlos en el Response del POST.
             _ = Task.Run(async () =>
@@ -319,22 +321,22 @@ namespace GestionCitas.Controllers
 
                 // Aquí puedes extraer el teléfono del cliente desde la BD si el DTO no lo trae
                 // Simulamos un teléfono para la prueba
-                
-                var cliente = await _context.clientes.FindAsync(nuevaCita.clienteid);
+                                    
                 string telefonoDestino = "";
                 string nombreCliente = "";
-                if(cliente != null)
+                if (cliente != null)
                 {
-                    telefonoDestino = cliente.telefono ?? "34670403589"; 
+                    telefonoDestino = cliente.telefono ?? "34670403589";
                     nombreCliente = cliente.nombre ?? "Cliente de Prueba";
                 }
-               
+
                 await whatsappService.EnviarConfirmacionCitaAsync(
                     nuevaCita.negocioid,
                     telefonoDestino,
                     nombreCliente,
-                    nuevaCita.fecha_hora_inicio 
-                );
+                    nuevaCita.fecha_hora_inicio
+                );               
+                
             });
 
             return CreatedAtAction("GetCitas", new { id = nuevaCita.citaid }, resultDto);

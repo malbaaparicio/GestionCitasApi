@@ -42,7 +42,18 @@ public class MetaWhatsAppService : IWhatsAppNotificador
             var phoneNumberId = negocio.conf_whatsapp_number_id;
 
             // Meta exige el número con prefijo de país pero sin el símbolo '+' (ej: 34670403589)
-            var numeroLimpio = telefonoCliente.Replace(" ", "").TrimStart('+');
+            // Extraemos únicamente los dígitos (elimina '+', espacios, guiones, etc.)
+            var numeroLimpio = new string(telefonoCliente.Where(char.IsDigit).ToArray());
+
+            // Si es un teléfono español de 9 dígitos sin prefijo internacional, añadimos el 34
+            if (numeroLimpio.Length == 9 &&
+               (numeroLimpio.StartsWith("6") || numeroLimpio.StartsWith("7") ||
+                numeroLimpio.StartsWith("8") || numeroLimpio.StartsWith("9")))
+            {
+                numeroLimpio = "34" + numeroLimpio;
+            }
+
+            Console.WriteLine($"Enviando WhatsApp a número normalizado: {numeroLimpio}");
 
             var url = $"https://graph.facebook.com/v25.0/{phoneNumberId}/messages";
 
